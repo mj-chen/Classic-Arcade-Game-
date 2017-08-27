@@ -13,8 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
-var Engine = (function(global) {
+    var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -23,12 +22,28 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        // add a score counter
+        // add a button for restart the game 
+        btn = doc.createElement('button'),
+        // the score variable
+        score = 0,
+        myreq,
+        pause = false,
         lastTime;
-
+        
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
+   
 
+    doc.body.appendChild(btn);
+    btn.innerHTML = 'Start';
+    btn.addEventListener("click", function(){
+        pause = false;
+        btn.style.visibility = 'hidden';
+        init();
+    });
+    
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -39,32 +54,52 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
+        
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
-
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
+       
+        update(dt); 
 
+        render(); 
+        
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
+       
         lastTime = now;
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
-         */
-        win.requestAnimationFrame(main);
+         */ 
+        myreq = win.requestAnimationFrame(main); 
+        // check if the player wins 
+        gameWin();
+        // check if ths player fails 
+        gameOver();
+
     }
 
+    
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
      * game loop.
      */
+
+     function drawScore() {
+         ctx.strokeStyle = 'orange';
+         ctx.fillStyle = 'red';
+         ctx.font = '2em serif';
+         ctx.strokeText('Score:', 50, 101);
+         ctx.strokeText(score, 140, 101);
+         ctx.fillText('Score:', 50, 101);
+         ctx.fillText(score, 140, 101);
+    }
+
     function init() {
-        reset();
+        player.reset();
         lastTime = Date.now();
         main();
     }
@@ -78,9 +113,11 @@ var Engine = (function(global) {
      * functionality this way (you could just implement collision detection
      * on the entities themselves within your app.js file).
      */
+
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        // check collison 
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -90,13 +127,30 @@ var Engine = (function(global) {
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
-    function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
-        });
-        player.update();
-    }
 
+    // Arrays to store the current positions of entities 
+    var loc_enemies = [];
+    //var loc_player;
+  
+    function updateEntities(dt) { 
+       // loc_player = player.update();
+        allEnemies.forEach(function(enemy,index) {
+            enemy.update(dt);
+            loc_enemies[index] = [enemy.x, enemy.y];
+        });
+    }
+    
+    // detect the collisions between player and enemies
+    function checkCollisions() {
+        loc_enemies.forEach(function(loc){
+            if (player.x < (loc[0]+allEnemies[0].width) && (player.x+player.width) > loc[0] && 
+                player.y < (loc[1]+allEnemies[0].height) && (player.y+player.height)>loc[1]){
+                return pause = true;
+            } 
+        });
+    }
+    
+    
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -134,9 +188,9 @@ var Engine = (function(global) {
                  */
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
-        }
-
+        }   
         renderEntities();
+        drawScore();
     }
 
     /* This function is called by the render function and is called on each game
@@ -150,18 +204,64 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
-        player.render();
+        if (char){
+        player.render(char); 
+        }
     }
 
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen
      * those sorts of things. It's only called once by the init() method.
      */
-    function reset() {
-        // noop
+
+    /*function reset() {
+        player.x = 101;
+        player.y = 415; 
+        player.render();
+    }*/
+
+
+    function gameOver(){
+        if(pause){
+            pausegame();
+            endFail();
+            startgame();
+        }
     }
 
+    function gameWin() {
+        if(player.y < 0){
+            pausegame();
+            endWin();
+            score++;
+            startgame();
+        } 
+    }
+
+    function pausegame() {
+        cancelAnimationFrame(myreq);
+        myreq = undefined;
+    }
+
+    function startgame() {
+        btn.style.visibility = 'visible';
+    }
+
+    function endFail() {
+     ctx.font = '3em serif';
+     ctx.fillStyle = 'black';
+     ctx.textAlign = 'center';
+     ctx.fillText('Game Over', canvas.width/2, canvas.height/3);
+    }
+
+    function endWin() {
+     ctx.font = '4em serif';
+     ctx.fillStyle = 'red';
+     ctx.textAlign = 'center';
+     ctx.fillText('You Win', canvas.width/2, canvas.height/3);
+    }
+
+    
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
@@ -171,7 +271,10 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png'
     ]);
     Resources.onReady(init);
 
@@ -180,4 +283,5 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+  
 })(this);
