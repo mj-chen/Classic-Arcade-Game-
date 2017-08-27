@@ -1,7 +1,7 @@
 frontend-nanodegree-arcade-game
 ===============================
 Run the game 
-1. Either clone or download a zip of this repository.
+1. Either clone or download a zip of this repository at https://github.com/mj-chen/Classic-Arcade-Game-.
 2. Navigate to the cloned/downloaded directory.
 3. Simply open index.html with your favorite browser and play the game!
 
