@@ -8,15 +8,9 @@ let Character = function(sprite,x,y,width,height){
   this.height = height;
 }
 
+// Draw the characters on the screen, required method for game
 Character.prototype = {
   constructor: Character,
-  /*update:function(dt) {
-    if (this.x < 505){
-    this.x = (this.speed)*dt + this.x;} else{
-        this.x = -100;
-    }
-    return [this.x, this.y];
-  },*/
   render:function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);0
   }
@@ -28,70 +22,31 @@ let Enemy = function(sprite,x,y,width,height,speed){
 };
 
 Enemy.prototype = Object.create(Character.prototype);
+
+// Update the enemy's position, required method for game
+// Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt){ 
     if (this.x < 505){
       this.x = (this.speed)*dt + this.x;} 
     else{
         this.x = -100;
       }
-    //return [this.x, this.y];
 };
 
 Enemy.prototype.constructor = Enemy;
 
 
-/*var Enemy = function(speed,y) {
-    this.sprite = 'images/enemy-bug.png';
-    this.speed = speed;
-    this.x = 0;
-    this.y = y;
-    this.width = 70;
-    this.height = 10;
-};*/
-
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-/*Enemy.prototype.update = function(dt) {
-    if (this.x < 505){
-    this.x = (this.speed)*dt + this.x;} else{
-        this.x = -100;
-    }
-
-    return [this.x, this.y];
-
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-};*/
-
-// Draw the enemy on the screen, required method for game
-/*Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);0
-};*/
-
-
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+
 let Player = function(sprite,x,y,width,height){
     Character.call(this,sprite,x,y,width,height);
 };
 
 Player.prototype = Object.create(Character.prototype);
+
 Player.prototype.constructor = Player;
-
-
-/*var Player = function(x) {
-    this.sprite;
-    this.x = x;
-    this.y = 415;
-    this.width = 50;
-    this.height = 20
-};*/
-
-/*Player.prototype.update = function() {
-    return [this.x, this.y];
-};*/
 
 Player.prototype.render = function(char) {
     this.sprite = char;

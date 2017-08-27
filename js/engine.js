@@ -13,7 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-    var Engine = (function(global) {
+var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -34,8 +34,6 @@
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
-   
-
     doc.body.appendChild(btn);
     btn.innerHTML = 'Start';
     btn.addEventListener("click", function(){
@@ -205,7 +203,7 @@
             enemy.render();
         });
         if (char){
-        player.render(char); 
+            player.render(char); 
         }
     }
 
@@ -248,17 +246,17 @@
     }
 
     function endFail() {
-     ctx.font = '3em serif';
-     ctx.fillStyle = 'black';
-     ctx.textAlign = 'center';
-     ctx.fillText('Game Over', canvas.width/2, canvas.height/3);
+        ctx.font = '3em serif';
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.fillText('Game Over', canvas.width/2, canvas.height/3);
     }
 
     function endWin() {
-     ctx.font = '4em serif';
-     ctx.fillStyle = 'red';
-     ctx.textAlign = 'center';
-     ctx.fillText('You Win', canvas.width/2, canvas.height/3);
+        ctx.font = '4em serif';
+        ctx.fillStyle = 'red';
+        ctx.textAlign = 'center';
+        ctx.fillText('You Win', canvas.width/2, canvas.height/3);
     }
 
     
