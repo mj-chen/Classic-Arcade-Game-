@@ -13,12 +13,12 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-var Engine = (function(global) {
+let Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
-    var doc = global.document,
+    let doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
@@ -53,7 +53,7 @@ var Engine = (function(global) {
          * computer is) - hurray time!
          */
         
-        var now = Date.now(),
+        let now = Date.now(),
             dt = (now - lastTime) / 1000.0;
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -96,6 +96,11 @@ var Engine = (function(global) {
          ctx.fillText(score, 140, 101);
     }
 
+    function updateScore() {
+        ctx.clearRect(0,0,140,101);
+        render();
+    }
+
     function init() {
         player.reset();
         lastTime = Date.now();
@@ -127,7 +132,7 @@ var Engine = (function(global) {
      */
 
     // Arrays to store the current positions of entities 
-    var loc_enemies = [];
+    let loc_enemies = [];
     //var loc_player;
   
     function updateEntities(dt) { 
@@ -148,7 +153,6 @@ var Engine = (function(global) {
         });
     }
     
-    
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -159,7 +163,8 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        var rowImages = [
+    
+        let rowImages = [
                 'images/water-block.png',   // Top row is water
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
@@ -187,8 +192,8 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }   
-        renderEntities();
         drawScore();
+        renderEntities();
     }
 
     /* This function is called by the render function and is called on each game
@@ -207,18 +212,6 @@ var Engine = (function(global) {
         }
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
-
-    /*function reset() {
-        player.x = 101;
-        player.y = 415; 
-        player.render();
-    }*/
-
-
     function gameOver(){
         if(pause){
             pausegame();
@@ -229,9 +222,10 @@ var Engine = (function(global) {
 
     function gameWin() {
         if(player.y < 0){
+            score++;
+            updateScore();
             pausegame();
             endWin();
-            score++;
             startgame();
         } 
     }

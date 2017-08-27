@@ -56,13 +56,13 @@ Player.prototype.render = function(char) {
 };
 
 Player.prototype.reset = function() {
-    player.x = 101;
-    player.y = 415; 
-    player.render();
+    this.x = 101;
+    this.y = 415; 
+    this.render();
 }
 
-Player.prototype.handleInput = function(key) {
-    var key = key;
+Player.prototype.handleInput = function(keycode) {
+    let key = keycode;
     if (key === 'right'&& this.x<404){
       this.x = this.x + 101;
     }
@@ -79,13 +79,13 @@ Player.prototype.handleInput = function(key) {
 };
 
 function chooseChar(){
-    var chars = document.createDocumentFragment();
-    var ul = document.createElement('ul');
-    var sprites = ['images/char-boy.png', 'images/char-cat-girl.png','images/char-horn-girl.png',
+    let chars = document.createDocumentFragment();
+    let ul = document.createElement('ul');
+    let sprites = ['images/char-boy.png', 'images/char-cat-girl.png','images/char-horn-girl.png',
      'images/char-pink-girl.png'];
     sprites.forEach(function(sprite){
-      var li = document.createElement('li');
-      var image = document.createElement('img');
+      let li = document.createElement('li');
+      let image = document.createElement('img');
       image.src= sprite;
       li.appendChild(image);
       ul.appendChild(li);
@@ -111,7 +111,7 @@ var allEnemies= [Bug1, Bug2, Bug3, Bug4, Bug5];
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
+    let allowedKeys = {
         37: 'left',
         38: 'up',
         39: 'right',
@@ -120,7 +120,7 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-var char;
+let char;
 
 document.querySelector('ul').addEventListener('click', function(e){ 
        char = e.target.getAttribute('src');
